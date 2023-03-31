@@ -1,3 +1,5 @@
+# We make a linear regression model using tensors of PyTorch
+
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
@@ -15,10 +17,11 @@ y = torch.matmul(bta,x)+3+2*torch.from_numpy(np.random.normal(size=300))
 whgt=torch.tensor([0.0001,0.0001,0.001],requires_grad=True)
 alpha=0.002
 
-
 plt.figure()
-plt.hist(y.detach().numpy(),bins=30,edgecolor='k',alpha=0.7)
-plt.hist((torch.matmul(bta,x)).detach().numpy(),bins=30,edgecolor='k',alpha=0.7)
+plt.hist(y.detach().numpy(),bins=30,edgecolor='k',alpha=0.7,label='Y')
+plt.hist((torch.matmul(bta,x)).detach().numpy()+3,bins=30,edgecolor='k',alpha=0.7,label='f(X)= y_predicted: where f is linear')
+plt.text(x=-14,y=20,s=f'mean f(X)= {torch.matmul(bta,x).detach().numpy().mean()}\nstd_dev= {torch.matmul(bta,x).detach().numpy().std()}')
+plt.legend()
 plt.show()
 
 for epoch in range(1000):
@@ -35,3 +38,13 @@ for epoch in range(1000):
 
 print("\n",whgt)
 print(bta)
+
+y_pred=torch.matmul(whgt, x) + 3
+error_numpy= (y_pred-y).detach().numpy()
+plt.figure()
+plt.hist(error_numpy,bins=30,edgecolor='k',label='Y',color='salmon')
+plt.title("Expected: Normal distribution with std_dev=2, mean=0")
+plt.text(x=-6,y=19,s=f'mean={error_numpy.mean()};\nstd_dev={error_numpy.std()}')
+plt.show()
+
+print("!!From this model the standard deviation of the error has reduced from 6 to 2!!!")
